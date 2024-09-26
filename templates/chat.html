@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Chat App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #chat-box {
+            width: 50%;
+            height: 300px;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+            margin: 20px 0;
+            padding: 10px;
+        }
+        #chat-input {
+            width: 50%;
+            display: flex;
+        }
+        #chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        #chat-input button {
+            padding: 10px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Chat Application</h1>
+    
+    <div id="chat-box">
+        <!-- Messages will be dynamically inserted here -->
+    </div>
+
+    <form id="chat-input">
+        <input type="text" id="message" placeholder="Enter your message" required>
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        // Function to load messages
+        async function loadMessages() {
+            const response = await fetch('/get_messages');
+            const messages = await response.json();
+            
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML = '';
+            
+            messages.forEach(msg => {
+                const p = document.createElement('p');
+                p.textContent = `${msg.username}: ${msg.message}`;
+                chatBox.appendChild(p);
+            });
+
+            // Scroll chat box to the bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Load messages every 2 seconds (polling)
+        setInterval(loadMessages, 2000);
+
+        // Handle message submission
+        document.getElementById('chat-input').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const message = document.getElementById('message').value;
+
+            // Send the message via POST request
+            const formData = new FormData();
+            formData.append('message', message);
+
+            await fetch('/send_message', {
+                method: 'POST',
+                body: formData
+            });
+
+            // Clear the message input
+            document.getElementById('message').value = '';
+
+            // Reload the messages
+            loadMessages();
+        });
+    </script>
+
+</body>
+</html>
