@@ -56,7 +56,10 @@ def login_page():
             
     return render_template('loginpage.html',login=login)
 
-
+@app.route('/logout')
+def logout():
+    session.pop('login', None)  # Remove 'login' from session
+    return redirect(url_for('login_page'))  # Redirect to login page after logging out
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5000)
