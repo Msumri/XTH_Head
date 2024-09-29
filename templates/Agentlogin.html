@@ -1,47 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>XTH Admin</title>
-    <meta
-      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-      name="viewport"
-    />
+{% extends 'base.html' %}
 
-    <link
-      rel="icon"
-      href="{{ url_for('static', filename='assets/img/kaiadmin/favicon.ico') }}"
-      type="{{ url_for('static', filename='image/x-icon') }}"
-    />
-
-    <!-- Fonts and icons -->
-    <script src="{{ url_for('static', filename='assets/js/plugin/webfont/webfont.min.js') }}"></script>
-    <script>
-      WebFont.load({
-        google: { families: ["Public Sans:300,400,500,600,700"] },
-        custom: {
-          families: [
-            "Font Awesome 5 Solid",
-            "Font Awesome 5 Regular",
-            "Font Awesome 5 Brands",
-            "simple-line-icons",
-          ],
-          urls: ["{{ url_for('static', filename='assets/css/fonts.min.css') }}"],
-        },
-        active: function () {
-          sessionStorage.fonts = true;
-        },
-      });
-    </script>
-
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/plugins.min.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/kaiadmin.min.css') }}" />
-
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/demo.css') }}" />
-  </head>
+{% block content %}
 
   <div class="container" >
     <div class="page-inner">    
@@ -57,12 +16,12 @@
                     <div class="form-group">
                                                     <!-- Flash Messages -->
               
-                        <label for="email2">Username</label>                     
+                        <label for="email2">Agent ID#</label>                     
                         <input
                         type="name"
                         class="form-control"
                         name="agens"
-                        placeholder="Enter username or email"
+                        placeholder="Enter Agent ID"
                         />
                         {% with messages = get_flashed_messages()%}
                         {% if messages %}
@@ -73,7 +32,7 @@
                             {% endfor %} 
                      {%else%}
                         <small id="emailHelp2" class="form-text text-muted"
-                        >enter your username or email</small
+                        >dont share your 4 digit agent ID#</small
                         >
                         {% endif %}
                         {% endwith %}  
@@ -105,3 +64,5 @@
 </div>
 
 
+    
+{% endblock %}
