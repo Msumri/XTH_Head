@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+    <div class="card">
+
+        <div class="card-header">
+           <table class="table table-typo">
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <h4  style="font-weight: bold;">{{ emails[sender]['subject'] }}:</h4>
+                            <p>&nbsp;</p>
+
+                        <small style="font-weight: bold;"> From: {{ sender }}</small>
+                        <p><small > {{ emails[sender]['body'] }}</small></p>    
+                        </td>
+
+                    </tr>
+                    <tr>
+                        
+                        <td>
+                            <small style="font-weight: bold;">Reply by: </small><small>Midoshy</small>   
+                            <p><small> {{ emails[sender]['response'] }}</small></p>    
+
+                            
+                        </td>
+                    </tr>
+ 
+                </tbody>
+            </table>
+        </div>
+
+
+
+    </div>
+    
+{% endblock %}

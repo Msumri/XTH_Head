@@ -1,7 +1,11 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from functools import wraps
+import json
 
-
+# Function to read data from JSON file
+def read_json_file(filename):
+    with open(filename) as f:
+        return json.load(f)
 
 app = Flask(__name__)
 app.secret_key = 'hakoonamatata'  
@@ -21,14 +25,18 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def login_required_agent(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('agentlogin'):
+            return redirect(url_for('agent'))  # Redirect to login if not logged in
+        return f(*args, **kwargs)
+    return decorated_function
 
-@app.route('/')
-@login_required
-def home():
-    return render_template('index.html')
 
-@app.route('/login', methods=['POST','GET'])
+@app.route('/login/', methods=['POST','GET'])
 def login_page():
+    page_name="login"
     agentid=None
     password=None
     login = session.get('login', False)
@@ -41,6 +49,7 @@ def login_page():
             if agentid in usernames:
                 if password == passwords :
                     session['login'] = True
+
                     return redirect(url_for('home'))                    
                 else:
                     flash('check your user or password')
@@ -54,21 +63,27 @@ def login_page():
         if login:
             return redirect(url_for('home'))
             
-    return render_template('loginpage.html',login=login)
+    return render_template('loginpage.html',login=login,page_name=page_name)
 
-@app.route('/logout')
+@app.route('/logout/')
 def logout():
     session.pop('login', None)  # Remove 'login' from session
     return redirect(url_for('login_page'))  # Redirect to login page after logging out
+##########end of normal login ####################
 
+@app.route('/')
+@login_required
+def home():
+    return render_template('index.html',page_name="Dashboard")
 
 ### agnet login info####
 
-@app.route('/agent_login', methods=['POST','GET'])
+@app.route('/agent/', methods=['POST','GET'])
+@login_required
 def agent_page():
     agentid=None
     password=None
-    login = session.get('agent_login', False)
+    login = session.get('agentlogin', False)
     if request.method == 'POST':
         try:
             agentid=request.form['agens']
@@ -78,19 +93,38 @@ def agent_page():
             if agentid in agentsid:
                 agentindex=agentsid.index(agentid)
                 if password in agentpass and agentpass.index(password)==agentindex:
-                    session['agent_login'] = True
-                    return redirect(url_for('home'))
+                    session['agentlogin'] = True
+
+                    return redirect(url_for('emails'))
                 else:
                     flash(f'Incorrect password for Agent ID# {agentid}')
 
             else :
-                session['agent_login'] =False
-                flash('This user doesnt exist')
+                session['agentlogin'] =False
+                flash('This Agent ID# doesnt exist')
         except:
-            login = session.get('agent_login', False)
-    
+            login = session.get('agentlogin', False)
+    else:
+        if login:
+            return redirect(url_for('emails'))
             
-    return render_template('Agentlogin.html',login=login)
+    return render_template('Agentlogin.html',login=login,page_name="E-mail")
+
+
+@app.route('/emails/')
+@login_required_agent
+def emails():
+    emails_data = read_json_file('emails.json')  # Load data from JSON file
+
+    # Add your email handling logic here
+    return render_template('email.html',emails=emails_data,page_name="E-mail")
+@app.route('/emails/<sender>/')
+@login_required_agent
+def extedemail(sender):
+    emails_data = read_json_file('emails.json')  # Load data from JSON file
+
+    return render_template('extedemail.html', emails=emails_data,sender=sender)
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5000)

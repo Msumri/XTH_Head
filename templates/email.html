@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+
+.email-row {
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s ease; /* Smooth transition */
+    background-color:black !important;
+}
+
+.email-row:hover {
+    background-color: #f0f0f0  !important; /* Light grey background on hover */
+}
+    
+    </style>
+
+    <div class="card">
+
+        <div class="card-header">
+           <table class="table table-typo">
+
+                <tbody>
+                    {% for email, details in emails.items() %}
+                    <tr class="email-row" onclick="window.location='{{ url_for('extedemail', sender=email) }}'" >
+                        <td>
+                        <small style="font-weight: bold;"> From: </small>{{ email }}
+                        </td>
+                        <td>
+                        <small >{{ details.subject }} -</small>
+                        {{ details.body }}
+                        </td>
+                       
+                    </tr>
+                    {% endfor %}
+
+ 
+                </tbody>
+            </table>
+        </div>
+
+
+
+    </div>
+    
+{% endblock %}

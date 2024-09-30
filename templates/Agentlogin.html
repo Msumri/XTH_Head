@@ -2,21 +2,21 @@
 
 {% block content %}
 
-  <div class="container" >
-    <div class="page-inner">    
+
 <div class="row">
-    <div class="col-md-4" Style="  position: absolute; top:20% ; left:35%">
-        <form method="POST" action="{{ url_for('login_page') }}">
+    <div class="col-md-4">
+        <form method="POST" action="{{ url_for('agent_page') }}">
 
             <div class="card">
                 <div class="card-header">
-                <div class="card-title">Login</div>
+                <div class="card-title">Agent Login:</div>
+                <label for="card">To ensure no one finds our secret communication, we installed an extra layer of security.</label>
                 </div>
                 <div class="card-body">
                     <div class="form-group">
                                                     <!-- Flash Messages -->
               
-                        <label for="email2">Agent ID#</label>                     
+                        <label for="Agent ID">Agent ID#</label>                     
                         <input
                         type="name"
                         class="form-control"
@@ -60,8 +60,7 @@
 
     </div>
 
-</div>
-</div>
+
 
 
     
