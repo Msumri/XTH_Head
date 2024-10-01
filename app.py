@@ -13,7 +13,7 @@ app.secret_key = 'hakoonamatata'
 #hard code ids --its a bad idea but just for this simulation its fine
 agentsid=['6218','7154','9819','5287','8030']
 agentpass=['1899','3729','6515','9364','9484']
-usernames=['midoshy','mohammed.alharthy@crosstownhigh.org']
+usernames=['midoshy','mlhart28@gmail.com','maple','natasha']
 passwords='022695'
 
 # Custom decorator to require login
