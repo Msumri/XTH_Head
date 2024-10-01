@@ -36,7 +36,7 @@ def login_required_agent(f):
 
 @app.route('/login/', methods=['POST','GET'])
 def login_page():
-    page_name="login"
+
     agentid=None
     password=None
     login = session.get('login', False)
@@ -63,7 +63,7 @@ def login_page():
         if login:
             return redirect(url_for('home'))
             
-    return render_template('loginpage.html',login=login,page_name=page_name)
+    return render_template('loginpage.html',login=login,page_name="login")
 
 @app.route('/logout/')
 def logout():
