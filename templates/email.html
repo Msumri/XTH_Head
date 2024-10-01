@@ -12,7 +12,7 @@
 .email-row:hover {
     background-color: #f0f0f0  !important; /* Light grey background on hover */
 }
-    
+
     </style>
 
     <div class="card">
@@ -28,9 +28,12 @@
                         </td>
                         <td>
                         <small >{{ details.subject }} -</small>
-                        {{ details.body }}
+                        <small>
+                            {{ details.body [:100] }}{{ '...' if details.body |length > 100 else '' }}
+                        
+                        </small>
                         </td>
-                       
+
                     </tr>
                     {% endfor %}
 
