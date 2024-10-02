@@ -86,7 +86,7 @@
               </li>
 
               <li class="nav-item">
-                <a  href=" {% if session.get('agentlogin') %} {{url_for('emails')}} {% else %} {{url_for('agent_page')}} {% endif %}">
+                <a  href="{{url_for('emails')}}">
                   <i class="icon-envelope-letter"></i>
                   <p>E-Mail</p>
                 </a>
@@ -98,7 +98,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a  href="#sidebarLayouts">
+                <a  href="{{url_for('map')}}">
                   <i class="icon-map"></i>
                   <p>Maps</p>
                 </a>

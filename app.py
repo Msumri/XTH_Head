@@ -12,7 +12,6 @@ app.secret_key = 'hakoonamatata'
 
 #hard code ids --its a bad idea but just for this simulation its fine
 agentsid=['6218','7154','9819','5287','8030']
-agentpass=['1899','3729','6515','9364','9484']
 usernames=['midoshy','mlhart28@gmail.com','maple','natasha']
 passwords='022695'
 #music code is 117 200 320
@@ -33,7 +32,7 @@ def login_required_agent(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get('agentlogin'):
-            return redirect(url_for('agent'))  # Redirect to login if not logged in
+            return redirect(url_for('agent_page', next=request.url))  # Redirect to login if not logged in
         return f(*args, **kwargs)
     return decorated_function
 
@@ -71,7 +70,8 @@ def login_page():
 
 @app.route('/logout/')
 def logout():
-    session.pop('login', None)  # Remove 'login' from session
+    session.pop('login', None) # Remove 'login' from session
+    session.pop('agentlogin', None)  # Remove 'agentlogin' from session
     return redirect(url_for('login_page'))  # Redirect to login page after logging out
 ##########end of normal login ####################
 
@@ -83,26 +83,18 @@ def home():
 ### agnet login info####
 
 @app.route('/agent/', methods=['POST','GET'])
-@login_required
 def agent_page():
     agentid=None
-    password=None
     login = session.get('agentlogin', False)
     if request.method == 'POST':
         try:
             agentid=request.form['agens']
-            password=request.form['password']
         
             
             if agentid in agentsid:
-                agentindex=agentsid.index(agentid)
-                if password in agentpass and agentpass.index(password)==agentindex:
-                    session['agentlogin'] = True
-
-                    return redirect(url_for('emails'))
-                else:
-                    flash(f'Incorrect password for Agent ID# {agentid}')
-
+                session['agentlogin'] = True
+                next_page = request.args.get('next')
+                return redirect(next_page or url_for('home'))
             else :
                 session['agentlogin'] =False
                 flash('This Agent ID# doesnt exist')
@@ -110,12 +102,13 @@ def agent_page():
             login = session.get('agentlogin', False)
     else:
         if login:
-            return redirect(url_for('emails'))
+            return redirect(url_for('home'))
             
     return render_template('Agentlogin.html',login=login,page_name="E-mail")
 
 
 @app.route('/emails/')
+@login_required
 @login_required_agent
 def emails():
     emails_data = read_json_file('emails.json')  # Load data from JSON file
@@ -128,6 +121,13 @@ def extedemail(sender):
     emails_data = read_json_file('emails.json')  # Load data from JSON file
 
     return render_template('extedemail.html', emails=emails_data,sender=sender)
+
+@app.route('/map')
+@login_required
+@login_required_agent
+def map():
+
+    return render_template('maps.html' )
 
 
 if __name__ == '__main__':
