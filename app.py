@@ -11,7 +11,8 @@ app = Flask(__name__)
 app.secret_key = 'hakoonamatata'  
 
 #hard code ids --its a bad idea but just for this simulation its fine
-agentsid=['6218','7154','9819','5287','8030']
+agentsid=['0886','7154','0503','5287','8030',"9801",'8812']
+youragentid=agentsid[4] #the index of the id that will acctuly work
 usernames=['midoshy','mlhart28@gmail.com','maple','natasha']
 passwords='022695'
 #music code is 117 200 320
@@ -92,9 +93,12 @@ def agent_page():
         
             
             if agentid in agentsid:
-                session['agentlogin'] = True
-                next_page = request.args.get('next')
-                return redirect(next_page or url_for('home'))
+                if agentid==youragentid:
+                    session['agentlogin'] = True
+                    next_page = request.args.get('next')
+                    return redirect(next_page or url_for('home'))
+                else:
+                    flash('This Agent ID# is not associated with your account please use your ID')
             else :
                 session['agentlogin'] =False
                 flash('This Agent ID# doesnt exist')
