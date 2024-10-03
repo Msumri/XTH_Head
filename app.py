@@ -13,7 +13,7 @@ app.secret_key = 'hakoonamatata'
 #hard code ids --its a bad idea but just for this simulation its fine
 agentsid=['0886','7154','0503','5287','8030',"9801",'8812']
 youragentid=agentsid[4] #the index of the id that will acctuly work
-usernames=['midoshy','mlhart28@gmail.com','maple','natasha']
+usernames=['midoshy','mlhart28@gmail.com','maple','natasha','sumri']
 passwords='022695'
 #music code is 117 200 320
 #hash code SHA256          E2EAFA6A936505D1706D676854A101B04A2FBD84CE52EC840D5E6F13473D0A68
