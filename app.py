@@ -55,7 +55,7 @@ def login_page():
 
                     return redirect(url_for('home'))                    
                 else:
-                    flash('check your user or password')
+                    flash(f'the password for [ {agentid} ] is incorrect')
 
             else:
                 flash('This user doesnt exist')
