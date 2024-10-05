@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, session, redirect, url_for, flash
+from flask import Flask, render_template, request, session, redirect, url_for, flash,send_from_directory
 from functools import wraps
 import json
-
+import os
+import time
 # Function to read data from JSON file
 def read_json_file(filename):
     with open(filename) as f:
@@ -20,6 +21,23 @@ passwords='022695'
 #641B44E5FE100E9F11685E13009928E2BA52544B4E7D7E495AF8000A0A148DC9
 #641B44E5FE100E9F11685E13009928E2BA52544B4E7D7E495AF8000A0A148DC9
 #E2EAFA6A936505D1706D676854A101B04A2FBD84CE52EC840D5E6F13473D0A68
+
+#this fuctions look at all the files in Dr and add them to json file with all info
+def organizefiles():
+    with open("safedrive.json", 'r') as file:
+        data_dict = json.load(file)
+    dicoffiles=data_dict
+    files = os.listdir("static/drive")
+    for file in files:
+        dicoffiles.setdefault(file,{
+        "number":files.index(file)+1,
+        "url":file,
+        "uploadby":"shadow",
+        "date":int(time.time())
+        })
+    with open("safedrive.json", 'w') as file:
+        json.dump(dicoffiles, file, indent=4)
+    
 # Custom decorator to require login
 def login_required(f):
     @wraps(f)
@@ -126,13 +144,26 @@ def extedemail(sender):
 
     return render_template('extedemail.html', emails=emails_data,sender=sender)
 
-@app.route('/map')
+@app.route('/map/')
 @login_required
 @login_required_agent
 def map():
 
     return render_template('maps.html' )
 
+@app.route('/drive/')
+@login_required
+@login_required_agent
+def drive():
+    organizefiles()
+    uploadedfiles = read_json_file('safedrive.json')  # Load data from JSON file
 
+    return render_template('drive.html',files=uploadedfiles)
+@app.route('/drive/<filename>')
+@login_required
+@login_required_agent
+def download_file(filename):
+   
+    return  send_from_directory('static/drive',filename, as_attachment=True )
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5000)
