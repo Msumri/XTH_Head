@@ -94,7 +94,7 @@
               <li class="nav-item {% if request.path == url_for("progressreport") %} active {% endif %}">
                 <a href="{{url_for('progressreport')}}">
                   <i class="icon-book-open"></i>
-                  <p>Progress Reports</p>
+                  <p>Agents</p>
                 </a>
               </li>
               <li class="nav-item {% if request.path == url_for("map") %} active {% endif %}">
@@ -110,7 +110,7 @@
                 </a>
               </li>
               <li class="nav-item {% if request.path == "lol" %} active {% endif %}">
-                <a href="#sidebarLayouts">
+                <a href="{{url_for('safecontrol')}}">
                   <i class="icon-lock"></i>
                   <p>Safe Control</p>
                 </a>

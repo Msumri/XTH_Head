@@ -89,20 +89,6 @@
         "subject": "Internal Resistance",
         "body": "One of the operatives is becoming doubtful of the plan. I’ll handle it, but we should keep an eye on anyone questioning the mission.",
         "response": "Address the concerns immediately. We can't afford any doubts within our ranks."
-    },
-    "silentfox@onione.fan": {
-        "subject": "Asset Seizure",
-        "body": "We’re close to making our first major asset grab. Once the targets liquidate their portfolios, we’ll move in and take control of everything.",
-        "response": "Prepare the groundwork for a smooth acquisition. Timing will be crucial."
-    },
-    "grimwolf@onione.fan": {
-        "subject": "Financial Independence Propaganda",
-        "body": "Launch the campaign focusing on financial independence. We need them to think that by following us, they’re breaking free from the traditional system.",
-        "response": "Start drafting the campaign materials. We need to resonate deeply with their desires for freedom."
-    },
-    "crimsonfang@onione.fan": {
-        "subject": "Upcoming Milestone",
-        "body": "Next week marks a critical point. If we can push the narrative further, we’ll have enough momentum to control the flow of their financial decisions entirely.",
-        "response": "Let’s ensure all teams are prepared. This is a pivotal moment for us."
     }
+   
 }

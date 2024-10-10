@@ -14,7 +14,7 @@ upload_bp = Blueprint('upload_bp', __name__, template_folder='templates')
 
 # Folder to store uploaded files
 UPLOAD_FOLDER = 'static/uploads/'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','wav','mp3'}
 
 # Helper function to check allowed file extensions
 def allowed_file(filename):
@@ -44,7 +44,8 @@ def upload_file():
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure the upload folder exists
         file.save(os.path.join(UPLOAD_FOLDER, file.filename))
         if hasher(f'static/uploads/{file.filename}') == hasher(hashkey):
-            return f"you are in"
+            session['filehash'] = True
+            return redirect(url_for('progressreport'))
         else:
             return f"key doesnt exist"
     

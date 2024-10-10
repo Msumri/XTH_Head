@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for, flash,send_from_directory
+from flask import Flask, render_template, request, session, redirect, url_for, flash,send_from_directory,abort
 from file_upload import upload_bp   # Import the blueprint
 from functools import wraps
 import json
@@ -18,11 +18,28 @@ agentsid=['0886','7154','0503','5287','8030',"9801",'8812']
 youragentid=agentsid[4] #the index of the id that will acctuly work
 usernames=['midoshy','mlhart28@gmail.com','maple','natasha','sumri','aya']
 passwords='022695'
+safecontrolcode="117200320"
 #music code is 117 200 320
 #hash code SHA256          E2EAFA6A936505D1706D676854A101B04A2FBD84CE52EC840D5E6F13473D0A68
 #641B44E5FE100E9F11685E13009928E2BA52544B4E7D7E495AF8000A0A148DC9
 #641B44E5FE100E9F11685E13009928E2BA52544B4E7D7E495AF8000A0A148DC9
 #E2EAFA6A936505D1706D676854A101B04A2FBD84CE52EC840D5E6F13473D0A68
+
+
+# List of blocked IPs
+failed_attempts = {}
+BLOCKED_IPS = []
+def is_ip_blocked(ip):
+    return ip in BLOCKED_IPS
+def track_failed_attempts(ip):
+    if ip in failed_attempts:
+        failed_attempts[ip] += 1
+    else:
+        failed_attempts[ip] = 1
+    # Block the IP after 3 failed attempts
+    if failed_attempts[ip] >= 3:
+        BLOCKED_IPS.append(ip)
+
 
 from auth import login_required, login_required_agent
 
@@ -82,14 +99,18 @@ def login_page():
 @app.route('/logout/')
 def logout():
     session.pop('login', None) # Remove 'login' from session
-    session.pop('agentlogin', None)  # Remove 'agentlogin' from session
+    session.pop('agentlogin', None)# Remove 'agentlogin' from session
+    session.pop('filehash', None)  # Remove 'filehash' from session
+    session.pop('safecontrolcode', None)  # Remove 'safecontrolcode' from session
+
+    
     return redirect(url_for('login_page'))  # Redirect to login page after logging out
 ##########end of normal login ####################
 
 @app.route('/')
 @login_required
 def home():
-    return render_template('index.html',page_name="Dashboard",url='home')
+    return render_template('index.html',page_name="Dashboard")
 
 ### agnet login info####
 
@@ -118,7 +139,7 @@ def agent_page():
         if login:
             return redirect(url_for('home'))
             
-    return render_template('Agentlogin.html',login=login,page_name="E-mail" ,url='agent_page')
+    return render_template('Agentlogin.html',login=login,page_name="E-mail" )
 
 
 @app.route('/emails/')
@@ -128,13 +149,13 @@ def emails():
     emails_data = read_json_file('emails.json')  # Load data from JSON file
 
     # Add your email handling logic here
-    return render_template('email.html',emails=emails_data,page_name="E-mail",url='emails')
+    return render_template('email.html',emails=emails_data,page_name="E-mail")
 @app.route('/emails/<sender>/')
 @login_required_agent
 def extedemail(sender):
     emails_data = read_json_file('emails.json')  # Load data from JSON file
 
-    return render_template('extedemail.html', emails=emails_data,sender=sender,url='extedemail',page_name="details")
+    return render_template('extedemail.html', emails=emails_data,sender=sender,page_name="details")
 
 @app.route('/map/')
 @login_required
@@ -150,7 +171,7 @@ def drive():
     organizefiles()
     uploadedfiles = read_json_file('safedrive.json')  # Load data from JSON file
 
-    return render_template('drive.html',files=uploadedfiles,page_name="Safe Drive",url='drive')
+    return render_template('drive.html',files=uploadedfiles,page_name="Safe Drive")
 @app.route('/drive/<filename>')
 @login_required
 @login_required_agent
@@ -159,13 +180,62 @@ def download_file(filename):
     return  send_from_directory('static/drive',filename, as_attachment=True )
 
 
-@app.route('/prog/')
+@app.route('/agnet/')
 @login_required
 @login_required_agent
 def progressreport():
-    hashchecker=hashcheck.calculate_file_hash('static/drive/Wake_Me_Up_1.wav')
-    return render_template('progressreport.html',hashchecker=hashchecker,page_name="progress reports")
+    hash = session.get('filehash')
+    if hash:
+        hashchecker=hashcheck.calculate_file_hash('static/drive/Wake_Me_Up_1.wav')
+        return render_template('progressreport.html',hashchecker=hashchecker,page_name="Agents")
+    else:
 
+        return redirect(url_for('upload_bp.upload_form'))
 
+@app.route('/safecontrol/', methods=['GET'])
+@login_required
+@login_required_agent
+def safecontrol():
+    attempts=0
+    if request.headers.getlist("X-Forwarded-For"):
+        user_ip = request.headers.getlist("X-Forwarded-For")[0]
+    else:
+        user_ip = request.remote_addr
+      # Check if the IP is already blocked
+    if is_ip_blocked(user_ip):
+        abort(403)  # Block access
+    if user_ip in failed_attempts:
+        attempts= failed_attempts[user_ip]
+
+    safetoenter = session.get('safecontrolcode')
+        
+    return render_template('safecontrol.html',page_name='Safe Control',safetoenter=safetoenter,attempts=attempts)
+@app.route('/safecontrol_check/', methods=['POST'])
+@login_required
+@login_required_agent
+def safecontrol_post():
+    user_ip=None
+    if request.headers.getlist("X-Forwarded-For"):
+        user_ip = request.headers.getlist("X-Forwarded-For")[0]
+    else:
+        user_ip = request.remote_addr
+    if request.method == 'POST':
+        code1=request.form['code1']
+        code2=request.form['code2']
+        code3=request.form['code3']
+        code=code1+code2+code3
+        print(code)
+        if code==safecontrolcode:
+            session['safecontrolcode'] = True
+        else:
+            session['safecontrolcode'] = False
+            track_failed_attempts(user_ip)
+
+        return redirect(url_for('safecontrol'))
+    
+# Handle Forbidden Error
+@app.errorhandler(403)
+def forbidden(e):
+    return "Access Denied: Your IP is blocked!", 403
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5000)

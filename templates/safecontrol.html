@@ -1,0 +1,50 @@
+
+
+{% extends 'base.html' %}
+
+{% block content %}
+{% if safetoenter %}3
+aaa
+{% else %}
+
+
+<style>
+    .input-group {
+        display: flex;
+        gap: 10px; /* space between the inputs */
+    }
+    input[type="text"] {
+        width: 50px;
+        text-align: center;
+    }
+</style>
+<div class="row">
+    <div class="col-md-3 ms-auto me-auto">
+        <form method="POST" action="{{ url_for('safecontrol_post') }}">
+
+            <div class="card">
+                <div class="card-header">
+                <div class="card-title">Safe Control Max Security:</div>
+                <label for="card">You have {{3-attempts}} attempts to Enter the code. if you faild the server will block you</label>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <input name="code1" type="text" maxlength="3" pattern="\d{3}" title="Please enter exactly 3 numbers" required>-
+                        <input name="code2" type="text" maxlength="3" pattern="\d{3}" title="Please enter exactly 3 numbers" required>-
+                        <input name="code3" type="text" maxlength="3" pattern="\d{3}" title="Please enter exactly 3 numbers" required>
+                        
+                    </div>
+
+                   
+                </div>
+                <div class="card-action">
+                    <button class="btn btn-success"  type="submit" value="Submit">login</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endif %}
+    
+{% endblock %}
