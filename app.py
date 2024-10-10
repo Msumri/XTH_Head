@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash,send_from_directory
+from file_upload import upload_bp   # Import the blueprint
 from functools import wraps
 import json
 import os
 import time
+import hashcheck
 # Function to read data from JSON file
 def read_json_file(filename):
     with open(filename) as f:
@@ -22,6 +24,8 @@ passwords='022695'
 #641B44E5FE100E9F11685E13009928E2BA52544B4E7D7E495AF8000A0A148DC9
 #E2EAFA6A936505D1706D676854A101B04A2FBD84CE52EC840D5E6F13473D0A68
 
+from auth import login_required, login_required_agent
+
 #this fuctions look at all the files in Dr and add them to json file with all info
 def organizefiles():
     with open("safedrive.json", 'r') as file:
@@ -38,23 +42,11 @@ def organizefiles():
     with open("safedrive.json", 'w') as file:
         json.dump(dicoffiles, file, indent=4)
     
-# Custom decorator to require login
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not session.get('login'):
-            return redirect(url_for('login_page'))  # Redirect to login if not logged in
-        return f(*args, **kwargs)
-    return decorated_function
 
-def login_required_agent(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not session.get('agentlogin'):
-            return redirect(url_for('agent_page', next=request.url))  # Redirect to login if not logged in
-        return f(*args, **kwargs)
-    return decorated_function
 
+# Register the upload blueprint
+
+app.register_blueprint(upload_bp, url_prefix='/upload/')
 
 @app.route('/login/', methods=['POST','GET'])
 def login_page():
@@ -97,7 +89,7 @@ def logout():
 @app.route('/')
 @login_required
 def home():
-    return render_template('index.html',page_name="Dashboard")
+    return render_template('index.html',page_name="Dashboard",url='home')
 
 ### agnet login info####
 
@@ -126,7 +118,7 @@ def agent_page():
         if login:
             return redirect(url_for('home'))
             
-    return render_template('Agentlogin.html',login=login,page_name="E-mail")
+    return render_template('Agentlogin.html',login=login,page_name="E-mail" ,url='agent_page')
 
 
 @app.route('/emails/')
@@ -136,20 +128,20 @@ def emails():
     emails_data = read_json_file('emails.json')  # Load data from JSON file
 
     # Add your email handling logic here
-    return render_template('email.html',emails=emails_data,page_name="E-mail")
+    return render_template('email.html',emails=emails_data,page_name="E-mail",url='emails')
 @app.route('/emails/<sender>/')
 @login_required_agent
 def extedemail(sender):
     emails_data = read_json_file('emails.json')  # Load data from JSON file
 
-    return render_template('extedemail.html', emails=emails_data,sender=sender)
+    return render_template('extedemail.html', emails=emails_data,sender=sender,url='extedemail',page_name="details")
 
 @app.route('/map/')
 @login_required
 @login_required_agent
 def map():
 
-    return render_template('maps.html' )
+    return render_template('maps.html',page_name="maps",url=map )
 
 @app.route('/drive/')
 @login_required
@@ -158,12 +150,22 @@ def drive():
     organizefiles()
     uploadedfiles = read_json_file('safedrive.json')  # Load data from JSON file
 
-    return render_template('drive.html',files=uploadedfiles)
+    return render_template('drive.html',files=uploadedfiles,page_name="Safe Drive",url='drive')
 @app.route('/drive/<filename>')
 @login_required
 @login_required_agent
 def download_file(filename):
    
     return  send_from_directory('static/drive',filename, as_attachment=True )
+
+
+@app.route('/prog/')
+@login_required
+@login_required_agent
+def progressreport():
+    hashchecker=hashcheck.calculate_file_hash('static/drive/Wake_Me_Up_1.wav')
+    return render_template('progressreport.html',hashchecker=hashchecker,page_name="progress reports")
+
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5000)

@@ -7,13 +7,11 @@
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
       name="viewport"
     />
-
     <link
-      rel="icon"
-      href="{{ url_for('static', filename='assets/img/kaiadmin/favicon.ico') }}"
-      type="{{ url_for('static', filename='image/x-icon') }}"
+    rel="icon"
+    href="{{ url_for('static', filename='assets/img/kaiadmin/favicon.ico') }}"
+    type="{{ url_for('static', filename='image/x-icon') }}"
     />
-
     <!-- Fonts and icons -->
     <script src="{{ url_for('static', filename='assets/js/plugin/webfont/webfont.min.js') }}"></script>
     <script>
@@ -39,9 +37,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/plugins.min.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/kaiadmin.min.css') }}" />
 
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/demo.css') }}" />
   </head>
+
+  
   <body>
     <div class="wrapper">
       <!-- Sidebar -->
@@ -50,7 +48,7 @@
           <!-- Logo Header -->
           <div class="logo-header" data-background-color="dark">
             <a href="{{ url_for('home') }}" class="logo">
-              <img
+                <img
                 src="{{ url_for('static', filename='assets/img/kaiadmin/logo_light.svg') }}"
                 alt="navbar brand"
                 class="navbar-brand"
@@ -74,48 +72,48 @@
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
             <ul class="nav nav-secondary">
-              <li class="nav-item active">
-                <a
-                  href="{{ url_for('home') }}"
-                  class="collapsed"
-                  aria-expanded="false"
-                >
+
+              <li class="nav-item {% if request.path == url_for("home") %} active {% endif %}">
+                <a href="{{ url_for('home') }}">
                   <i class="fas fa-home"></i>
                   <p>Dashboard</p>
                 </a>
               </li>
-
-              <li class="nav-item">
-                <a  href="{{url_for('emails')}}">
+              <li class="nav-section">
+                <span class="sidebar-mini-icon">
+                  <i class="fa fa-ellipsis-h"></i>
+                </span>
+                <h4 class="text-section">Components</h4>
+              </li>
+              <li class="nav-item {% if request.path == url_for('emails') %} active {% endif %}">
+                <a href="{{ url_for('emails') }}">
                   <i class="icon-envelope-letter"></i>
                   <p>E-Mail</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a  href="#sidebarLayouts">
+              <li class="nav-item {% if request.path == url_for("progressreport") %} active {% endif %}">
+                <a href="{{url_for('progressreport')}}">
                   <i class="icon-book-open"></i>
                   <p>Progress Reports</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a  href="{{url_for('map')}}">
+              <li class="nav-item {% if request.path == url_for("map") %} active {% endif %}">
+                <a href="{{url_for('map')}}">
                   <i class="icon-map"></i>
                   <p>Maps</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a  href="{{url_for('drive')}}">
+              <li class="nav-item {% if request.path == url_for("drive") %} active {% endif %}">
+                <a href="{{url_for('drive')}}">
                   <i class="icon-drawer"></i>
-                  <p>Drive</p>
+                  <p>Safe Drive</p>
                 </a>
               </li>
-
-              <li class="nav-item">
-                <a  href="#sidebarLayouts">
+              <li class="nav-item {% if request.path == "lol" %} active {% endif %}">
+                <a href="#sidebarLayouts">
                   <i class="icon-lock"></i>
-                  <p>Safe control</p>
+                  <p>Safe Control</p>
                 </a>
-
               </li>
             </ul>
           </div>
@@ -125,97 +123,99 @@
 
       <div class="main-panel">
         <div class="main-header">
-          <div class="main-header-logo">
-            <!-- Logo Header -->
-            <div class="logo-header" data-background-color="dark">
-              <a href="index.html" class="logo">
-                <img
-                  src="{{ url_for('static', filename='assets/img/kaiadmin/logo_light.svg') }}"
-                  alt="navbar brand"
-                  class="navbar-brand"
-                  height="20"
-                />
-              </a>
-              <div class="nav-toggle">
-                <button class="btn btn-toggle toggle-sidebar">
-                  <i class="gg-menu-right"></i>
-                </button>
-                <button class="btn btn-toggle sidenav-toggler">
-                  <i class="gg-menu-left"></i>
-                </button>
-              </div>
-              <button class="topbar-toggler more">
-                <i class="gg-more-vertical-alt"></i>
-              </button>
-            </div>
-            <!-- End Logo Header -->
-          </div>
-          <!-- Navbar Header -->
-          <nav
-            class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom"
-          >
-            <div class="container-fluid">
           
-
-              <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                <li
-                  class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none"
-                ></li>
-         
-            
-
-                
-                {% if session.get('login') %}
-                <button class="btn btn-warning"><a href="{{ url_for('logout') }}">Logout</a></button>
-            {% else %}
-                <button class="btn btn-warning"><a href="{{ url_for('login_page') }}">Login</a></button>
-            {% endif %}
-                  </ul>
-                </li>
-              </ul>
+          <!-- Navbar Header -->
+          <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+            <div class="align-items-right" style="width: 100px; margin-right: 0;margin-left: auto" >
+                 
+                    {% if session.get('login') %}
+                    <button class="btn btn-warning"><a href="{{ url_for('logout') }}">Logout</a></button>
+                    {% else %}
+                    <button class="btn btn-warning"><a href="{{ url_for('login_page') }}">Login</a></button>
+                    {% endif %}
             </div>
           </nav>
           <!-- End Navbar -->
         </div>
 
-
         <div class="container">
-            <div class="page-inner">
+          <div class="page-inner">
 
-                {% block content %}{% endblock %}
-
-            </div>
-
+            {% block content %}{% endblock %}
+            
+           
+          </div>
         </div>
-
 
         <footer class="footer">
-            <div class="container-fluid d-flex justify-content-between">
-              <nav class="pull-left">
-                <ul class="nav">
-                  <li class="nav-item">
-                   
-                      ThemeKita
-                  
-                  </li>
-                  <li class="nav-item">
-                   
-                  </li>
-                  <li class="nav-item">
-                    
-                  </li>
-                </ul>
-              </nav>
-              <div class="copyright">
-                2024, made with <i class="fa fa-heart heart text-danger"></i> by
-                ThemeKita</a>
-              </div>
-              <div>
-                Distributed by
-                ThemeWagon.
-              </div>
+          <div class="container-fluid d-flex justify-content-between">
+            <nav class="pull-left">
+              <ul class="nav">
+                <li class="nav-item">
+                  <a class="nav-link" >
+                    ThemeKita
+                  </a>
+                </li>
+            
+              </ul>
+            </nav>
+            <div class="copyright">
+              2024, made with <i class="fa fa-heart heart text-danger"></i> by
+              ThemeKita
             </div>
-          </footer>
-        </div>
-  
+            <div>
+              Distributed by
+              ThemeWagon.
+            </div>
+          </div>
+        </footer>
+      </div>
 
+     
+    </div>
+    <!--   Core JS Files   -->
+    <script src="{{ url_for('static', filename='assets/js/core/jquery-3.7.1.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='assets/js/core/popper.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='assets/js/core/bootstrap.min.js')}}"></script>
+
+    <!-- jQuery Scrollbar -->
+    <script src="{{ url_for('static', filename='assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js')}}"></script>
+
+    <!-- Datatables -->
+    <script src="{{ url_for('static', filename='assets/js/plugin/datatables/datatables.min.js')}}"></script>
+
+
+    <!-- Kaiadmin JS -->
+    <script src="{{ url_for('static', filename='assets/js/kaiadmin.min.js')}}"></script>
+
+    
+    <script>
+      $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
+        type: "line",
+        height: "70",
+        width: "100%",
+        lineWidth: "2",
+        lineColor: "#177dff",
+        fillColor: "rgba(23, 125, 255, 0.14)",
+      });
+
+      $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
+        type: "line",
+        height: "70",
+        width: "100%",
+        lineWidth: "2",
+        lineColor: "#f3545d",
+        fillColor: "rgba(243, 84, 93, .14)",
+      });
+
+      $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
+        type: "line",
+        height: "70",
+        width: "100%",
+        lineWidth: "2",
+        lineColor: "#ffa534",
+        fillColor: "rgba(255, 165, 52, .14)",
+      });
+    </script>
+  </body>
+</html>
