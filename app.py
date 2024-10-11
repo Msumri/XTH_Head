@@ -1,10 +1,12 @@
-from flask import Flask, render_template, request, session, redirect, url_for, flash,send_from_directory,abort
+from flask import Flask, render_template, request, session, redirect, url_for, flash,send_from_directory,abort,jsonify
 from file_upload import upload_bp   # Import the blueprint
 from functools import wraps
 import json
 import os
 import time
 import hashcheck
+import requests
+
 # Function to read data from JSON file
 def read_json_file(filename):
     with open(filename) as f:
@@ -12,7 +14,7 @@ def read_json_file(filename):
 
 app = Flask(__name__)
 app.secret_key = 'hakoonamatata'  
-
+PICO_IP="192.168.1.228"
 #hard code ids --its a bad idea but just for this simulation its fine
 agentsid=['0886','7154','0503','5287','8030',"9801",'8812']
 youragentid=agentsid[4] #the index of the id that will acctuly work
@@ -192,24 +194,35 @@ def progressreport():
 
         return redirect(url_for('upload_bp.upload_form'))
 
-@app.route('/safecontrol/', methods=['GET'])
+@app.route('/safecontrol/', methods=['GET','POST'])
 @login_required
 @login_required_agent
 def safecontrol():
-    attempts=0
-    if request.headers.getlist("X-Forwarded-For"):
-        user_ip = request.headers.getlist("X-Forwarded-For")[0]
-    else:
-        user_ip = request.remote_addr
-      # Check if the IP is already blocked
-    if is_ip_blocked(user_ip):
-        abort(403)  # Block access
-    if user_ip in failed_attempts:
-        attempts= failed_attempts[user_ip]
+    if request.method=='POST':
+        data = request.get_json()  # Get the JSON data from the AJAX request
+        toggle_state = data.get('state')  # Extract the 'state' key from the JSON data
+        if toggle_state == 'on':
+            # Do something for 'on' state (e.g., activate a device)
+            r = requests.get(f'http://{PICO_IP}/?servo=180')
+        elif toggle_state == 'off':
+            # Do something for 'off' state (e.g., deactivate a device)
+            r = requests.get(f'http://{PICO_IP}/?servo=0')
+        return "yaay"
+    else:    
+        attempts=0
+        if request.headers.getlist("X-Forwarded-For"):
+            user_ip = request.headers.getlist("X-Forwarded-For")[0]
+        else:
+            user_ip = request.remote_addr
+        # Check if the IP is already blocked
+        if is_ip_blocked(user_ip):
+            abort(403)  # Block access
+        if user_ip in failed_attempts:
+            attempts= failed_attempts[user_ip]
 
-    safetoenter = session.get('safecontrolcode')
-        
-    return render_template('safecontrol.html',page_name='Safe Control',safetoenter=safetoenter,attempts=attempts)
+        safetoenter = session.get('safecontrolcode')
+            
+        return render_template('safecontrol.html',page_name='Safe Control',safetoenter=safetoenter,attempts=attempts)
 @app.route('/safecontrol_check/', methods=['POST'])
 @login_required
 @login_required_agent
