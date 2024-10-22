@@ -60,8 +60,7 @@
                         <ul class="nav nav-secondary" id="ip-list">
                             {% for ip in connected_ips %}
                             <li >
-                                <i class="icon-lock"></i>
-                                <p> {{ ip }}</p>
+                                <p>&nbsp;{{ ip }}</p>
                             </li>
                             {% endfor %}
                         </ul>
@@ -130,11 +129,12 @@
         const ips = await response.json();
         
         const chatBox = document.getElementById('ip-list');
-        chatBox.innerHTML = '';
+        chatBox.innerHTML = '<i class="icon-user"></i>';
         ips.forEach(ip => {
             const li = document.createElement('li');
             li.textContent = `${ip}`;
             chatBox.appendChild(li);
+
         });
 
     }
