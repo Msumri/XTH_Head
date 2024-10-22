@@ -1,0 +1,52 @@
+
+
+    <!DOCTYPE html>
+<html>
+<style>
+table, th, td {
+  border:1px solid black;
+  padding: 5px;
+}
+</style>
+<body>
+
+<h2>Chat log</h2>
+
+<table >
+  <tr>
+    <th>Message ID</th>
+    <th>IP</th>
+    <th>Name</th>
+    <th>Router</th>
+    <th>Routing</th>
+    <th>Messege</th>
+    <th>Action</th>
+
+
+  </tr>
+  {% for msg in messeges %}
+  <tr>
+    <td>{{msg.messegeid}}</td>
+    <td>{{msg.username}}</td>
+    <td>{{msg.Students_name}}</td>
+    <td>{{msg.router}}</td>
+    <td>{{msg.path}}</td>
+    <td>{{msg.message}}</td>
+    <td>
+        <form method="POST" action="{{ url_for('admin.chat') }}">
+
+        <input type="hidden" name="messegeid" value="{{msg.messegeid}}">
+        <button   type="submit" name="deleteall" value="false">delete</button>
+
+    </td>
+
+  </tr>
+  {% endfor %}
+
+</table>
+
+    <button  type="submit" name="deleteall" value="true">Clear All</button>
+    </form>
+</body>
+</html>
+

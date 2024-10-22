@@ -57,7 +57,7 @@
                         <div class="card-title">Connected IP Addresses:</div>
                     </div>
                     <div class="card-body">  
-                        <ul class="nav nav-secondary" id="ip-list">
+                        <ul  id="ip-list">
                             {% for ip in connected_ips %}
                             <li >
                                 <p>&nbsp;{{ ip }}</p>
@@ -129,7 +129,7 @@
         const ips = await response.json();
         
         const chatBox = document.getElementById('ip-list');
-        chatBox.innerHTML = '<i class="icon-user"></i>';
+        chatBox.innerHTML = '';
         ips.forEach(ip => {
             const li = document.createElement('li');
             li.textContent = `${ip}`;

@@ -7,6 +7,7 @@ connected_ips = {}  # Use a set to store unique IP addresses
 
 # Define the path for the JSON file
 MESSAGE_FILE = 'messages.json'
+mesgsid=0
 def load_messages():
     if os.path.exists(MESSAGE_FILE):
         with open(MESSAGE_FILE, 'r') as file:
@@ -20,7 +21,6 @@ def save_messages(messages):
 # Load existing messages
 chat_bp = Blueprint('chat_bp', __name__, template_folder='templates')
 # Store chat messages in memory (use a database in production)
-messages = load_messages()
 @chat_bp.route('/', methods=['POST','GET'])
 def router():
     if request.method == 'POST':
@@ -38,7 +38,7 @@ def router():
 
 @chat_bp.route('/<routernum>/')
 def chat(routernum):
-    
+
     user_ip = request.remote_addr
     connected_ips[user_ip] = routernum  # Associate IP with the router selection
     session['router_selection'] = routernum
@@ -48,12 +48,14 @@ def chat(routernum):
 
 @chat_bp.route('/send_message', methods=['POST'])
 def send_message():
+    messages = load_messages()
+
     username = request.remote_addr  # Consider allowing users to input a username
     message = request.form.get('message')
     
     if username and message:
         if len(message) > 0:  # Add validation for message length
-            messages.append({'username': username, 'message': message, 'router':session.get('router_selection'), 'Students_name':session.get('name'), 'path':'notactive'})
+            messages.append({'messegeid': len(messages),'username': username, 'message': message, 'router':session.get('router_selection'), 'Students_name':session.get('name'), 'path':'notactive'})
             save_messages(messages)
             return '', 204  # Return empty response with "No Content"
         else:
@@ -62,10 +64,12 @@ def send_message():
 
 @chat_bp.route('/get_messages', methods=['GET'])
 def get_messages():
+    messages = load_messages()
+
     filtered_data = [msg for msg in messages if msg['router'] == session.get('router_selection')]
     return jsonify(filtered_data)
 
-@chat_bp.route('/admin', methods=['GET'])
+@chat_bp.route('/admintest', methods=['GET'])
 def chatadmin():
 
     return jsonify(load_messages())
