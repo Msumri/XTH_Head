@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Name Input and Select</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+        }
+        input, select {
+            margin: 10px 0;
+            padding: 10px;
+        }
+        button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>The Chat App</h1>
+    
+    <form id="user-form" method="POST" action="{{ url_for('chat_bp.router') }}">
+        <label for="name">Enter your name:</label>
+        <input name="name"type="text" id="name" placeholder="Your name" required>
+
+        <label for="option">Select a Router:</label>
+        <select id="option" required name="router_number">
+            <option value="" disabled selected>Select a Router</option>
+            <option value="1">Router 1</option>
+            <option value="2">Router 2</option>
+            <option value="3">Router 3</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+
+
+
+</body>
+</html>

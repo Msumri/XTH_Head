@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask Chat App</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <title>Chat Room {{routernum}}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,8 +43,14 @@
 </head>
 <body>
 
-    <h1>Chat Application</h1>
-    
+    <h1>Chat Room {{routernum}}</h1>
+        <h3>Connected IP Addresses:</h3>
+        <ul id="ip-list">
+            {% for ip in connected_ips %}
+            <li>{{ ip }}</li>
+            {% endfor %}
+        </ul>
+
     <div id="chat-box">
         <!-- Messages will be dynamically inserted here -->
     </div>
@@ -53,9 +61,25 @@
     </form>
 
     <script>
+        // Function to load IP
+        async function loadIP() {
+            const response = await fetch('{{ url_for('chat_bp.connected_ips_route') }}');
+            const ips = await response.json();
+            
+            const chatBox = document.getElementById('ip-list');
+            chatBox.innerHTML = '';
+            ips.forEach(ip => {
+                const li = document.createElement('li');
+                li.textContent = `${ip}`;
+                chatBox.appendChild(li);
+            });
+
+        }
+        setInterval(loadIP, 2000);
+
         // Function to load messages
         async function loadMessages() {
-            const response = await fetch('/get_messages');
+            const response = await fetch('{{ url_for('chat_bp.get_messages') }}');
             const messages = await response.json();
             
             const chatBox = document.getElementById('chat-box');
@@ -84,7 +108,7 @@
             const formData = new FormData();
             formData.append('message', message);
 
-            await fetch('/send_message', {
+            await fetch('{{ url_for('chat_bp.send_message') }}', {
                 method: 'POST',
                 body: formData
             });
@@ -94,8 +118,14 @@
 
             // Reload the messages
             loadMessages();
+            loadloadIP();
+
         });
     </script>
-
+<script>
+    window.onbeforeunload = function(event) {
+        $.post('{{ url_for('chat_bp.remove_ip') }}');
+    };
+    </script>
 </body>
 </html>

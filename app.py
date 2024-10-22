@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash,send_from_directory,abort,jsonify
 from file_upload import upload_bp   # Import the blueprint
+from chatapp import chat_bp   # Import the blueprint
+
 from functools import wraps
 import json
 import os
@@ -66,6 +68,9 @@ def organizefiles():
 # Register the upload blueprint
 
 app.register_blueprint(upload_bp, url_prefix='/upload/')
+from flask import Flask
+
+app.register_blueprint(chat_bp, url_prefix='/chatapp')  # Register with a URL prefix if needed
 
 @app.route('/login/', methods=['POST','GET'])
 def login_page():
