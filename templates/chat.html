@@ -1,101 +1,193 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask Chat App</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        #chat-box {
-            width: 50%;
-            height: 300px;
-            border: 1px solid #ccc;
-            overflow-y: scroll;
-            margin: 20px 0;
-            padding: 10px;
-        }
-        #chat-input {
-            width: 50%;
-            display: flex;
-        }
-        #chat-input input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-        }
-        #chat-input button {
-            padding: 10px;
-            border: none;
-            background-color: #28a745;
-            color: white;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Void Serpents >  Chat Room {{routernum}}</title>
+    <meta
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+      name="viewport"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <h1>Chat Application</h1>
-    
-    <div id="chat-box">
-        <!-- Messages will be dynamically inserted here -->
-    </div>
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='assets/img/kaiadmin/favicon.ico') }}"
+      type="{{ url_for('static', filename='image/x-icon') }}"
+    />
 
-    <form id="chat-input">
-        <input type="text" id="message" placeholder="Enter your message" required>
-        <button type="submit">Send</button>
-    </form>
-
+    <!-- Fonts and icons -->
+    <script src="{{ url_for('static', filename='assets/js/plugin/webfont/webfont.min.js') }}"></script>
     <script>
-        // Function to load messages
-        async function loadMessages() {
-            const response = await fetch('/get_messages');
-            const messages = await response.json();
-            
-            const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML = '';
-            
-            messages.forEach(msg => {
-                const p = document.createElement('p');
-                p.textContent = `${msg.username}: ${msg.message}`;
-                chatBox.appendChild(p);
-            });
-
-            // Scroll chat box to the bottom
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        // Load messages every 2 seconds (polling)
-        setInterval(loadMessages, 2000);
-
-        // Handle message submission
-        document.getElementById('chat-input').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const message = document.getElementById('message').value;
-
-            // Send the message via POST request
-            const formData = new FormData();
-            formData.append('message', message);
-
-            await fetch('/send_message', {
-                method: 'POST',
-                body: formData
-            });
-
-            // Clear the message input
-            document.getElementById('message').value = '';
-
-            // Reload the messages
-            loadMessages();
-        });
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["{{ url_for('static', filename='assets/css/fonts.min.css') }}"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
     </script>
 
-</body>
-</html>
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/plugins.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/kaiadmin.min.css') }}" />
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/demo.css') }}" />
+  </head>
+
+<div class="container" >
+    <div class="page-inner"> 
+        <h3 class="fw-bold mb-3">Router {{routernum}} </h3>   
+        <div class="row">
+
+            <div class="col-5 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-header">
+                        <div class="card-title">Connected IP Addresses:</div>
+                    </div>
+                    <div class="card-body">  
+                        <ul class="nav nav-secondary" id="ip-list">
+                            {% for ip in connected_ips %}
+                            <li >
+                                <p>&nbsp;{{ ip }}</p>
+                            </li>
+                            {% endfor %}
+                        </ul>
+           
+                    </div>
+                </div>
+                
+
+            </div>
+            <div class="col-12 col-md-8 ">
+                <div class="card card-stats card-round">
+                    <div class="card-header">
+                        <div class="card-title">Router {{routernum}}</div>
+                    </div>
+
+                    <form id="chat-input">
+
+                        <div class="card-body">  
+                            <style>
+                      
+
+                            .highlight {
+                            font-family: sans-serif;
+                            font-size: 16px;
+                            line-height: 2;
+                            width: 80%;
+                            color: rgb(27, 25, 40);
+                            background-color: rgb(168, 216, 255);
+                            border-radius: 20px;
+                            padding-top: 5px;
+                            padding-right: 10px;
+                            padding-bottom: 5px;
+                            padding-left: 20px;                            
+                            margin: 10px ; /* Optional: Add some spacing between highlighted divs if needed */
+                        }
+                                                
+                            </style>
+                            <div  id="chat-box" style=" height: 300px ;overflow: auto;">
+                                <!-- Messages will be dynamically inserted here -->
+                            </div>
+                        </div>
+
+                
+                            
+                            <div class="card-action">
+                                <input class="form-control" type="text" id="message" placeholder="Enter your message" required>
+                                <p></p>
+                                <button class="btn btn-success" type="submit">Send</button>
+
+                            </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<script>
+    // Function to load IP
+    async function loadIP() {
+        const response = await fetch('{{ url_for('chat_bp.connected_ips_route') }}');
+        const ips = await response.json();
+        
+        const chatBox = document.getElementById('ip-list');
+        chatBox.innerHTML = '<i class="icon-user"></i>';
+        ips.forEach(ip => {
+            const li = document.createElement('li');
+            li.textContent = `${ip}`;
+            chatBox.appendChild(li);
+
+        });
+
+    }
+    setInterval(loadIP, 2000);
+
+    // Function to load messages
+    async function loadMessages() {
+        const response = await fetch('{{ url_for('chat_bp.get_messages') }}');
+        const messages = await response.json();
+        
+        const chatBox = document.getElementById('chat-box');
+        chatBox.innerHTML = '';
+        
+        messages.forEach(msg => {
+            const p = document.createElement('p');
+            p.textContent = `${msg.username}: ${msg.message}`;
+            chatBox.appendChild(p);
+            p.classList.add('highlight'); 
+        });
+
+        // Scroll chat box to the bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Load messages every 2 seconds (polling)
+    setInterval(loadMessages, 2000);
+
+    // Handle message submission
+    document.getElementById('chat-input').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const message = document.getElementById('message').value;
+
+        // Send the message via POST request
+        const formData = new FormData();
+        formData.append('message', message);
+
+        await fetch('{{ url_for('chat_bp.send_message') }}', {
+            method: 'POST',
+            body: formData
+        });
+
+        // Clear the message input
+        document.getElementById('message').value = '';
+
+        // Reload the messages
+        loadMessages();
+        loadloadIP();
+
+    });
+</script>
+<script>
+window.onbeforeunload = function(event) {
+    $.post('{{ url_for('chat_bp.remove_ip') }}');
+};
+</script>

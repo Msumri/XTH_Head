@@ -39,10 +39,12 @@
 
   </head>
 
-  
+
   <body>
     <div class="wrapper">
       <!-- Sidebar -->
+      {% if session.get('login') %}
+
       <div class="sidebar" data-background-color="dark">
         <div class="sidebar-logo">
           <!-- Logo Header -->
@@ -120,6 +122,7 @@
         </div>
       </div>
       <!-- End Sidebar -->
+      {% endif %}
 
       <div class="main-panel">
         <div class="main-header">

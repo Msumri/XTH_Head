@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Void Serpents >  {{page_name}}</title>
+    <meta
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+      name="viewport"
+    />
+
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='assets/img/kaiadmin/favicon.ico') }}"
+      type="{{ url_for('static', filename='image/x-icon') }}"
+    />
+
+    <!-- Fonts and icons -->
+    <script src="{{ url_for('static', filename='assets/js/plugin/webfont/webfont.min.js') }}"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["{{ url_for('static', filename='assets/css/fonts.min.css') }}"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/plugins.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/kaiadmin.min.css') }}" />
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/demo.css') }}" />
+  </head>
+
+  <div class="container" >
+    <div class="page-inner">    
+<div class="row">
+<div class="col-md-4 ms-auto me-auto">
+    <div class="card card-stats card-round">
+        <div class="card-header">
+        <div class="card-title">The Chat App</div>
+        </div>
+        <form id="user-form" method="POST" action="{{ url_for('chat_bp.router') }}">
+
+        <div class="card-body">
+   
+            <div class="form-group">
+
+            </div>
+                <label for="name">Enter your name:</label>
+                <input class="form-control" name="name"type="text" id="name" placeholder="Your name" required>
+                <p></p>
+                <label for="option">Select a Router:</label>
+                <select class="form-select input-fixed" id="option" required name="router_number">
+                    <option value="" disabled selected>Select a Router</option>
+                    <option value="1">Router 1</option>
+                    <option value="2">Router 2</option>
+                    <option value="3">Router 3</option>
+                </select>
+            </div>
+            <div class="card-action">
+                <button class="btn btn-success" type="submit">Submit</button>
+
+            </div>
+            </form>
+    </div>
+</div>
+</div>
+
+</div>
+</div>
