@@ -1,37 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <title>Chat Room {{routernum}}</title>
-
-</head>
-<body>
-
-    <h1>Chat Room {{routernum}}</h1>
-        <h3>Connected IP Addresses:</h3>
-        <ul id="ip-list">
-            {% for ip in connected_ips %}
-            <li>{{ ip }}</li>
-            {% endfor %}
-        </ul>
-
-
-
-
 
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Void Serpents >  {{page_name}}</title>
+    <title>Void Serpents >  Chat Room {{routernum}}</title>
     <meta
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
       name="viewport"
     />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <link
       rel="icon"
@@ -69,9 +47,31 @@
   </head>
 
 <div class="container" >
-    <div class="page-inner">    
+    <div class="page-inner"> 
+        <h3 class="fw-bold mb-3">Router {{routernum}} </h3>   
         <div class="row">
-            <div class="col-md-6 ms-auto me-auto">
+
+            <div class="col-5 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-header">
+                        <div class="card-title">Connected IP Addresses:</div>
+                    </div>
+                    <div class="card-body">  
+                        <ul class="nav nav-secondary" id="ip-list">
+                            {% for ip in connected_ips %}
+                            <li >
+                                <i class="icon-lock"></i>
+                                <p> {{ ip }}</p>
+                            </li>
+                            {% endfor %}
+                        </ul>
+           
+                    </div>
+                </div>
+                
+
+            </div>
+            <div class="col-12 col-md-8 ">
                 <div class="card card-stats card-round">
                     <div class="card-header">
                         <div class="card-title">Router {{routernum}}</div>
@@ -80,7 +80,26 @@
                     <form id="chat-input">
 
                         <div class="card-body">  
-                            <div  id="chat-box" style=" height: 500px ;overflow: auto;">
+                            <style>
+                      
+
+                            .highlight {
+                            font-family: sans-serif;
+                            font-size: 16px;
+                            line-height: 2;
+                            width: 80%;
+                            color: rgb(27, 25, 40);
+                            background-color: rgb(168, 216, 255);
+                            border-radius: 20px;
+                            padding-top: 5px;
+                            padding-right: 10px;
+                            padding-bottom: 5px;
+                            padding-left: 20px;                            
+                            margin: 10px ; /* Optional: Add some spacing between highlighted divs if needed */
+                        }
+                                                
+                            </style>
+                            <div  id="chat-box" style=" height: 300px ;overflow: auto;">
                                 <!-- Messages will be dynamically inserted here -->
                             </div>
                         </div>
@@ -88,9 +107,9 @@
                 
                             
                             <div class="card-action">
-                                <input type="text" id="message" placeholder="Enter your message" required>
-
-                                <button type="submit">Send</button>
+                                <input class="form-control" type="text" id="message" placeholder="Enter your message" required>
+                                <p></p>
+                                <button class="btn btn-success" type="submit">Send</button>
 
                             </div>
                     </form>
@@ -133,6 +152,7 @@
             const p = document.createElement('p');
             p.textContent = `${msg.username}: ${msg.message}`;
             chatBox.appendChild(p);
+            p.classList.add('highlight'); 
         });
 
         // Scroll chat box to the bottom
