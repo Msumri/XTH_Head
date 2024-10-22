@@ -6,40 +6,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <title>Chat Room {{routernum}}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        #chat-box {
-            width: 50%;
-            height: 300px;
-            border: 1px solid #ccc;
-            overflow-y: scroll;
-            margin: 20px 0;
-            padding: 10px;
-        }
-        #chat-input {
-            width: 50%;
-            display: flex;
-        }
-        #chat-input input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-        }
-        #chat-input button {
-            padding: 10px;
-            border: none;
-            background-color: #28a745;
-            color: white;
-            cursor: pointer;
-        }
-    </style>
+
 </head>
 <body>
 
@@ -51,81 +18,156 @@
             {% endfor %}
         </ul>
 
-    <div id="chat-box">
-        <!-- Messages will be dynamically inserted here -->
-    </div>
 
-    <form id="chat-input">
-        <input type="text" id="message" placeholder="Enter your message" required>
-        <button type="submit">Send</button>
-    </form>
 
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Void Serpents >  {{page_name}}</title>
+    <meta
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+      name="viewport"
+    />
+
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='assets/img/kaiadmin/favicon.ico') }}"
+      type="{{ url_for('static', filename='image/x-icon') }}"
+    />
+
+    <!-- Fonts and icons -->
+    <script src="{{ url_for('static', filename='assets/js/plugin/webfont/webfont.min.js') }}"></script>
     <script>
-        // Function to load IP
-        async function loadIP() {
-            const response = await fetch('{{ url_for('chat_bp.connected_ips_route') }}');
-            const ips = await response.json();
-            
-            const chatBox = document.getElementById('ip-list');
-            chatBox.innerHTML = '';
-            ips.forEach(ip => {
-                const li = document.createElement('li');
-                li.textContent = `${ip}`;
-                chatBox.appendChild(li);
-            });
-
-        }
-        setInterval(loadIP, 2000);
-
-        // Function to load messages
-        async function loadMessages() {
-            const response = await fetch('{{ url_for('chat_bp.get_messages') }}');
-            const messages = await response.json();
-            
-            const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML = '';
-            
-            messages.forEach(msg => {
-                const p = document.createElement('p');
-                p.textContent = `${msg.username}: ${msg.message}`;
-                chatBox.appendChild(p);
-            });
-
-            // Scroll chat box to the bottom
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        // Load messages every 2 seconds (polling)
-        setInterval(loadMessages, 2000);
-
-        // Handle message submission
-        document.getElementById('chat-input').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const message = document.getElementById('message').value;
-
-            // Send the message via POST request
-            const formData = new FormData();
-            formData.append('message', message);
-
-            await fetch('{{ url_for('chat_bp.send_message') }}', {
-                method: 'POST',
-                body: formData
-            });
-
-            // Clear the message input
-            document.getElementById('message').value = '';
-
-            // Reload the messages
-            loadMessages();
-            loadloadIP();
-
-        });
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["{{ url_for('static', filename='assets/css/fonts.min.css') }}"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
     </script>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/plugins.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/kaiadmin.min.css') }}" />
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/demo.css') }}" />
+  </head>
+
+<div class="container" >
+    <div class="page-inner">    
+        <div class="row">
+            <div class="col-md-6 ms-auto me-auto">
+                <div class="card card-stats card-round">
+                    <div class="card-header">
+                        <div class="card-title">Router {{routernum}}</div>
+                    </div>
+
+                    <form id="chat-input">
+
+                        <div class="card-body">  
+                            <div  id="chat-box" style=" height: 500px ;overflow: auto;">
+                                <!-- Messages will be dynamically inserted here -->
+                            </div>
+                        </div>
+
+                
+                            
+                            <div class="card-action">
+                                <input type="text" id="message" placeholder="Enter your message" required>
+
+                                <button type="submit">Send</button>
+
+                            </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
 <script>
-    window.onbeforeunload = function(event) {
-        $.post('{{ url_for('chat_bp.remove_ip') }}');
-    };
-    </script>
-</body>
-</html>
+    // Function to load IP
+    async function loadIP() {
+        const response = await fetch('{{ url_for('chat_bp.connected_ips_route') }}');
+        const ips = await response.json();
+        
+        const chatBox = document.getElementById('ip-list');
+        chatBox.innerHTML = '';
+        ips.forEach(ip => {
+            const li = document.createElement('li');
+            li.textContent = `${ip}`;
+            chatBox.appendChild(li);
+        });
+
+    }
+    setInterval(loadIP, 2000);
+
+    // Function to load messages
+    async function loadMessages() {
+        const response = await fetch('{{ url_for('chat_bp.get_messages') }}');
+        const messages = await response.json();
+        
+        const chatBox = document.getElementById('chat-box');
+        chatBox.innerHTML = '';
+        
+        messages.forEach(msg => {
+            const p = document.createElement('p');
+            p.textContent = `${msg.username}: ${msg.message}`;
+            chatBox.appendChild(p);
+        });
+
+        // Scroll chat box to the bottom
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Load messages every 2 seconds (polling)
+    setInterval(loadMessages, 2000);
+
+    // Handle message submission
+    document.getElementById('chat-input').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const message = document.getElementById('message').value;
+
+        // Send the message via POST request
+        const formData = new FormData();
+        formData.append('message', message);
+
+        await fetch('{{ url_for('chat_bp.send_message') }}', {
+            method: 'POST',
+            body: formData
+        });
+
+        // Clear the message input
+        document.getElementById('message').value = '';
+
+        // Reload the messages
+        loadMessages();
+        loadloadIP();
+
+    });
+</script>
+<script>
+window.onbeforeunload = function(event) {
+    $.post('{{ url_for('chat_bp.remove_ip') }}');
+};
+</script>
